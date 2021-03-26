@@ -1,0 +1,10 @@
+/* font-family: "OpenSansRegular"; */
+@font-face {
+    font-family: "OpenSansRegular";
+    src: url("../fontsLibraty/OpenSans-Regular.eot");
+    src: url("../fontsLibraty/OpenSans-Regular.eot?#iefix")format("embedded-opentype"),
+    url("../fontsLibraty/OpenSans-Regular.woff") format("woff"),
+    url("../fontsLibraty/OpenSans-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}

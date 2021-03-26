@@ -1,0 +1,10 @@
+/* font-family: "OpenSansBold"; */
+@font-face {
+    font-family: "OpenSansBold";
+    src: url("../fontsLibraty/OpenSans-Bold.eot");
+    src: url("../fontsLibraty/OpenSans-Bold.eot?#iefix")format("embedded-opentype"),
+    url("../fontsLibraty/OpenSans-Bold.woff") format("woff"),
+    url("../fontsLibraty/OpenSans-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}

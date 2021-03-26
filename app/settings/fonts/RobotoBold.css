@@ -1,0 +1,10 @@
+/* font-family: "RobotoBold"; */
+@font-face {
+    font-family: "RobotoBold";
+    src: url("../fontsLibraty/RobotoBold.eot");
+    src: url("../fontsLibraty/RobotoBold.eot?#iefix")format("embedded-opentype"),
+    url("../fontsLibraty/RobotoBold.woff") format("woff"),
+    url("../fontsLibraty/RobotoBold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}

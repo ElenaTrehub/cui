@@ -1,0 +1,47 @@
+.logo{
+  font-size: 36px;
+  font-weight: bold;
+  a{
+    color: $menu-color;
+  }
+}
+.header-menu{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.header-menu__links{
+  margin-right: 50px;
+  & li{
+    display: inline-block;
+    padding-top: 17px;
+    padding-right: 24px;
+    transition: all .5s ease;
+    & a{
+      color: $menu-color;
+    }
+  }
+  & li:last-child{
+    padding-right: 0;
+  }
+  & li:hover{
+    & a{
+      color: $main;
+      text-decoration: none;
+    }
+  }
+}
+.header-menu__user{
+  transition: all .5s ease;
+  & a{
+    display: inline-block;
+    color: #999999;
+  }
+  & a:last-child{
+    margin-left: 20px;
+  }
+  & a:hover{
+    color: #555555;
+    text-decoration: none;
+  }
+}

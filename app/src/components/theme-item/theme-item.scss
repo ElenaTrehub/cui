@@ -1,0 +1,13 @@
+.theme-item {
+  width: 100px;
+  height: 100px;
+  margin-left: 10px;
+
+  & p{
+    text-align: center;
+    line-height: 100px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+}

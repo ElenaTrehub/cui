@@ -1,0 +1,10 @@
+/* font-family: "OpenSansLight"; */
+@font-face {
+    font-family: "OpenSansLight";
+    src: url("../fontsLibraty/OpenSans-Light.eot");
+    src: url("../fontsLibraty/OpenSans-Light.eot?#iefix")format("embedded-opentype"),
+    url("../fontsLibraty/OpenSans-Light.woff") format("woff"),
+    url("../fontsLibraty/OpenSans-Light.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}

@@ -1,0 +1,10 @@
+/* font-family: "RobotoRegular"; */
+@font-face {
+    font-family: "RobotoRegular";
+    src: url("../fontsLibraty/RobotoRegular.eot");
+    src: url("../fontsLibraty/RobotoRegular.eot?#iefix")format("embedded-opentype"),
+    url("../fontsLibraty/RobotoRegular.woff") format("woff"),
+    url("../fontsLibraty/RobotoRegular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
