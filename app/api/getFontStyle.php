@@ -14,21 +14,21 @@ if($file){
         $str = explode(':', $array[$i]);
 
         if($i === 0){
-            $obj->mainHeadingFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-1);
-            $obj->mainHeadingSize = trim($str[2]);
+            $obj->mainHeadingFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-15);
+            $obj->mainHeadingSize = substr(trim($str[2]), 0, strlen(trim($str[2]))-1);
         }
 
         else if($i === 1){
-            $obj->secondHeadingFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-1);
-            $obj->secondHeadingSize = trim($str[2]);
+            $obj->secondHeadingFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-15);
+            $obj->secondHeadingSize = substr(trim($str[2]), 0, strlen(trim($str[2]))-1);
         }
         else if($i === 2){
-            $obj->textFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-1);
-            $obj->textSize = trim($str[2]);
+            $obj->textFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-15);
+            $obj->textSize = substr(trim($str[2]), 0, strlen(trim($str[2]))-1);
         }
-        else{
-            $obj->menuFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-1);
-            $obj->menuSize = trim($str[2]);
+        else if($i === 3){
+            $obj->menuFont = substr(trim($str[1]), 1, strlen(trim($str[1]))-15);
+            $obj->menuSize = substr(trim($str[2]), 0, strlen(trim($str[2]))-1);
         }
 
 

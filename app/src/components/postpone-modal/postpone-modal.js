@@ -24,7 +24,8 @@ class PostponeModal extends Component{
                     html: {},
                     css: '',
                     theme: '',
-                    script: ''
+                    script: '',
+                    font: {}
 
                 }
             }
@@ -47,7 +48,8 @@ class PostponeModal extends Component{
                         html: {},
                         css: '',
                         theme: '',
-                        script: ''
+                        script: '',
+                        font: {}
 
                     }
                 }
@@ -152,7 +154,8 @@ class PostponeModal extends Component{
                         html: iframeFromHTML,
                         css: style,
                         theme: this.props.currentTheme.name,
-                        script: script
+                        script: script,
+                        font: this.props.currentFontStyle
                     }
                 };
                 return {
@@ -255,7 +258,8 @@ const mapStateToProps = (state) => {
     return {
         virtualDom: state.virtualDom,
         favoriteIframes: state.favoriteIframes,
-        currentTheme: state.currentTheme
+        currentTheme: state.currentTheme,
+        currentFontStyle: state.currentFontStyle
     }
 };
 const mapDispatchToProps = {

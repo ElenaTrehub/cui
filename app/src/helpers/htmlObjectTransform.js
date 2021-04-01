@@ -75,42 +75,76 @@ export default class HtmlObjectTransform{
         return block;
 
     }
-    static buildCssFile(style){
-        fetch("../api/createCssPage.php", {
+    static async buildCssFile(style){
+        const res = await fetch("../api/createCssPage.php", {
             method: 'POST',
             body: JSON.stringify({css: style})
-        }).then((res) => {
-            if(!res.ok){
-                throw Error(res.statusText)
-            }
-
         });
-
+        if(!res.ok){
+            throw  new Error(`Could not fetch,
+            received ${res.status}`)
+        }
+        else{
+            return 1;
+        }
     }
 
-    static buildThemeFile(fileName){
+     static async changeFontStyleFileByObject(obj){
 
-        fetch("../api/createThemePage.php", {
+        const res = await fetch("../api/changeFontStyleByObject.php", {
+            method: 'POST',
+            body: JSON.stringify({fontStyle: obj})
+        });
+
+        if(!res.ok){
+            throw  new Error(`Could not fetch,
+            received ${res.status}`)
+        }
+        else{
+            return 1;
+        }
+    };
+    static async buildThemeFile(fileName){
+
+        const res = await fetch("../api/createThemePage.php", {
             method: 'POST',
             body: JSON.stringify({name: fileName})
-        }).then((res) => {
-            if(!res.ok){
-                throw Error(res.statusText)
-            }
-
         });
-    }
 
-    static buildJsFile(script){
-        fetch("../api/createJsFile.php", {
+        if(!res.ok){
+            throw  new Error(`Could not fetch,
+            received ${res.status}`)
+        }
+        else{
+            return 1;
+        }
+    }
+    static async buildFontFile(fileName){
+
+        const res = await fetch("../api/createFontPage.php", {
+            method: 'POST',
+            body: JSON.stringify({name: fileName})
+        });
+        if(!res.ok){
+            throw  new Error(`Could not fetch,
+            received ${res.status}`)
+        }
+        else{
+            return 1;
+        }
+    }
+    static async buildJsFile(script){
+        const res = await fetch("../api/createJsFile.php", {
             method: 'POST',
             body: JSON.stringify({js: script})
-        }).then((res) => {
-            if(!res.ok){
-                throw Error(res.statusText)
-            }
-
         });
+        if(!res.ok){
+            throw  new Error(`Could not fetch,
+            received ${res.status}`)
+        }
+        else{
+            return 1;
+        }
 
     }
 

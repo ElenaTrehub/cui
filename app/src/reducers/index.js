@@ -10,7 +10,17 @@ const inintialState = {
     virtualDom: '',
     favoriteIframes: [],
     themes: [{name: 'initial', color: 'grey'},{name: 'ocean', color: 'blue'}, {name: 'rose', color: 'red'}],
-    currentTheme: {name: 'initial', color: 'grey'}
+    currentTheme: {name: 'initial', color: 'grey'},
+    currentFontStyle: {
+        mainHeadingFont: 'RobotoRegular',
+        mainHeadingSize: '32px',
+        secondHeadingFont : 'RobotoRegular',
+        secondHeadingSize: '20px',
+        textFont: 'RobotoRegular',
+        textSize: '14px',
+        menuFont: 'RobotoRegular',
+        menuSize: '14px'
+    }
 
 };
 
@@ -109,6 +119,13 @@ const reducer = (state = inintialState, action) => {
             return {
                 ...state,
                 currentTheme: currentTheme[0]
+            };
+
+        case 'CHOOSE_CURRENT_FONT_STYLE':
+
+            return {
+                ...state,
+                currentFontStyle: action.payload
             };
         default:
             return state;

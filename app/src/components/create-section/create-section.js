@@ -9,7 +9,8 @@ import {
     virtualDomLoaded,
     iframeIsChange,
     deleteFavoriteIframe,
-    chooseCurrentTheme
+    chooseCurrentTheme,
+    chooseCurrentFontStyle
 } from '../../actions';
 import Spinner from "../spinner";
 import {connect} from "react-redux";
@@ -48,17 +49,21 @@ class CreateSection extends Component{
                 return res;
             })
             .then(res => {
-                HtmlObjectTransform.buildCssFile(res.css);
+                const answer = HtmlObjectTransform.buildCssFile(res.css);
                 return res;
             })
             //.then(res => console.log(res.html))
             //.then(res => JSON.parse(res.html))
             .then(res => {
-                HtmlObjectTransform.buildJsFile(res.script);
+                const answer = HtmlObjectTransform.buildJsFile(res.script);
                 return res;
             })
             .then((res) => {
-                HtmlObjectTransform.buildThemeFile(this.props.currentTheme.name);
+                const answer = HtmlObjectTransform.buildThemeFile(this.props.currentTheme.name);
+                return res;
+            })
+            .then((res) => {
+                const answer = HtmlObjectTransform.buildFontFile('fontStyle');
                 return res;
             })
             .then(
@@ -73,6 +78,7 @@ class CreateSection extends Component{
             //.then(res => DOMHelper.parseStrToDOM(res.data))
             .then(res => DOMHelper.wrapTextNodes(res))
             .then(res => DOMHelper.wrapImages(res))
+            .then(res => DOMHelper.addSectionPanel(res))
             .then(dom => {
                 this.props.virtualDomLoaded(dom);
                 return dom;
@@ -87,6 +93,7 @@ class CreateSection extends Component{
                             <link rel="stylesheet" href="../assets/animate.css">
                             <link rel="stylesheet" href="style.css">
                             <link rel="stylesheet" href="theme.css">
+                            <link rel="stylesheet" href="fontStyle.css">
                 </head>`;
                 const js = `
                     <script src="main.js"></script>
@@ -106,6 +113,7 @@ class CreateSection extends Component{
             //.then((html) => axios.post("../api/saveTempPage.php", {html}))
             .then(() => iframe.load("../userDir/tkhvekhqkuvqoerb.html"))
             .then(() => this.enableEditing(iframe))
+            .then(() => this.enableDeleteSectionButton(iframe))
             .then(() => this.injectStyles(iframe))
 
 
@@ -127,7 +135,28 @@ class CreateSection extends Component{
         });
     }
 
+    enableDeleteSectionButton(iframe) {
+        iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
+            const id = element.getAttribute("deleteSectionId");
+            const virtualElement = this.props.virtualDom.querySelector(`[deleteSectionId="${id}"]`);
+            element.addEventListener('hover', (e)=> {
+                element.style.opacity = '1';
+            });
+            element.addEventListener('click', (e)=> {
+                UIkit.modal.confirm("Вы действительно хотите далить блок из структуры сайта? " +
+                    "Все несохраненные данные будут потеряны!", {labels: {ok: "Удалить", cancel: 'Отмена'}})
+                    .then(() => {
+                        element.parentNode.remove();
+                        virtualElement.parentNode.remove();
 
+                    })
+
+
+            });
+        });
+
+
+    }
     injectStyles(iframe) {
         const style = iframe.contentDocument.createElement("style");
         style.innerHTML = `
@@ -177,6 +206,7 @@ class CreateSection extends Component{
         prom.then(() => HtmlObjectTransform.buildCssFile(obj.css))
             .then(() => HtmlObjectTransform.buildJsFile(obj.script))
             .then(() => HtmlObjectTransform.buildThemeFile(obj.theme))
+            .then(() => HtmlObjectTransform.changeFontStyleFileByObject(obj.font))
             .then(
                 () => {
                     //console.log(obj.html);
@@ -189,6 +219,7 @@ class CreateSection extends Component{
             )
             .then(res => DOMHelper.wrapTextNodes(res))
             .then(res => DOMHelper.wrapImages(res))
+            .then(res => DOMHelper.addSectionPanel(res))
             .then(dom => {
 
                 this.props.virtualDomLoaded(dom);
@@ -207,6 +238,7 @@ class CreateSection extends Component{
                             <link rel="stylesheet" href="../assets/animate.css">
                             <link rel="stylesheet" href="style.css">
                             <link rel="stylesheet" href="theme.css">
+                            <link rel="stylesheet" href="fontStyle.css">
                 </head>`;
                 const js = `
                     <script src="main.js"></script>
@@ -226,6 +258,7 @@ class CreateSection extends Component{
             .then(() => {const html = ''; iframe.load(html)})
             .then(() => iframe.load("../userDir/tkhvekhqkuvqoerb.html"))
             .then(() => this.enableEditing(iframe))
+            .then(() => this.enableDeleteSectionButton(iframe))
             .then(() => this.injectStyles(iframe))
 
 
@@ -243,10 +276,7 @@ class CreateSection extends Component{
             resolve();
         });
         prom
-            .then(() => {
-                //let nameTheme = this.props.currentTheme.name;
-                HtmlObjectTransform.buildThemeFile(colorName);
-            })
+            .then(() =>HtmlObjectTransform.buildThemeFile(colorName))
 
             .then(() => this.props.chooseCurrentTheme(colorName))
             .then(() => {
@@ -260,6 +290,30 @@ class CreateSection extends Component{
                 iframe.contentWindow.document.head.append(link);
             });
 
+
+    };
+
+    chooseFontStyle = (e, obj) => {
+        e.preventDefault();
+        //console.log(obj);
+
+        const prom = new Promise((resolve)=>{
+            resolve();
+        });
+        prom
+            .then(() => HtmlObjectTransform.changeFontStyleFileByObject(obj))
+
+            .then(() => this.props.chooseCurrentFontStyle(obj))
+            .then(() => {
+                const iframe = document.querySelector('iframe');
+                iframe.contentWindow.document.head.querySelector('link[href="fontStyle.css"]').remove();
+
+                const link = document.createElement('link');
+                link.setAttribute('rel', 'stylesheet');
+                link.setAttribute('href', 'fontStyle.css');
+
+                iframe.contentWindow.document.head.append(link);
+            });
 
     };
 
@@ -285,7 +339,7 @@ class CreateSection extends Component{
                 <ChooseModal modal={modal1} target={'choose-modal'} itemsList={favoriteIframes} title='Список отложенных шаблонов'
                              openFavoriteIframe = {this.openFavoriteIframe} deleteIframe = {this.deleteIframe}/>
                 <ThemeModal themes={themes} modal={modal} selectColor={this.selectColor} target={'theme-modal'}/>
-                <FontModal modal={modal} target={'font-modal'}/>
+                <FontModal modal={modal} target={'font-modal'} chooseFontStyle={this.chooseFontStyle}/>
                 </>
         )
     }
@@ -309,6 +363,7 @@ const mapDispatchToProps = {
     virtualDomLoaded,
     iframeIsChange,
     deleteFavoriteIframe,
-    chooseCurrentTheme
+    chooseCurrentTheme,
+    chooseCurrentFontStyle
 };
 export default WithCreateService()(connect(mapStateToProps, mapDispatchToProps)(CreateSection));

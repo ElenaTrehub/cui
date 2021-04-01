@@ -74,6 +74,12 @@ const chooseCurrentTheme = (nameTheme) => {
         payload: nameTheme
     }
 };
+const chooseCurrentFontStyle = (fontsObj) => {
+    return {
+        type: 'CHOOSE_CURRENT_FONT_STYLE',
+        payload: fontsObj
+    }
+};
 export {
     rubricsLoaded,
     rubricsRequested,
@@ -87,6 +93,7 @@ export {
     iframeIsChange,
     favoriteIframeAdd,
     deleteFavoriteIframe,
-    chooseCurrentTheme
+    chooseCurrentTheme,
+    chooseCurrentFontStyle
 
 };

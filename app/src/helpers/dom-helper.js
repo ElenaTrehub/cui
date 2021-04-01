@@ -1,3 +1,5 @@
+import {remove} from "uikit/src/js/util";
+
 export default class DOMHelper {
 
     static parseStrToDOM(str) {
@@ -32,6 +34,50 @@ export default class DOMHelper {
         return dom;
     }
 
+    static addSectionPanel(dom){
+        const body = dom;
+        let sections = [];
+
+        function addButtonToSection(element) {
+            element.childNodes.forEach(node => {
+
+                if(node.nodeName === "SECTION") {
+                    sections.push(node);
+                }
+            })
+        };
+
+        addButtonToSection(body);
+        let buttons = [];
+        sections.forEach((node, i) => {
+            node.style.position = 'relative';
+            const deleteButtonWrapper = document.createElement('delete-section');
+            deleteButtonWrapper.style.position = 'absolute';
+            deleteButtonWrapper.style.opacity = '.8';
+            deleteButtonWrapper.style.border = 'none';
+            deleteButtonWrapper.style.top = '0';
+            deleteButtonWrapper.style.right = '0';
+            deleteButtonWrapper.style.padding = '10px';
+            deleteButtonWrapper.style.zIndex = '1000';
+            deleteButtonWrapper.style.backgroundColor = 'red';
+            deleteButtonWrapper.style.color = 'white';
+            deleteButtonWrapper.innerHTML = 'Удалить блок';
+            deleteButtonWrapper.setAttribute('deleteSectionId', i);
+            node.appendChild(deleteButtonWrapper);
+            //const button = document.getElementById(`deleteSectionId_${i}`);
+            //document.addEventListener('click', (e) => {
+                //if(e.target && e.target.tagName === 'BUTTON' &&  e.target.id === `deleteSectionId_${i}`){
+                    //e.preventDefault();
+                    //console.log('click');
+                //}
+
+            //});
+
+        });
+
+
+        return dom;
+    }
     static serializeDOMToString(dom) {
         const serializer = new XMLSerializer();
         return serializer.serializeToString(dom);
