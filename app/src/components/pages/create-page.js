@@ -39,7 +39,7 @@ const CreatePage = (props) => {
                             <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #font-modal" >Настройка шрифтов</button>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="#">Another Link</NavLink>
+                            <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #slider-modal" >Настройка слайдера</button>
                         </NavItem>
                         <NavItem>
                             <NavLink disabled href="#">Disabled Link</NavLink>

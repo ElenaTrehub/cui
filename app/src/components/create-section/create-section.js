@@ -28,6 +28,7 @@ import ChooseModal from "../choose-modal";
 import "uikit/dist/css/uikit.min.css";
 import ThemeModal from "../theme-modal/theme-modal";
 import FontModal from "../font-modal/font-modal"
+import SliderModal from "../slider-modal/slider-modal";
 
 class CreateSection extends Component{
 
@@ -67,20 +68,22 @@ class CreateSection extends Component{
                 return res;
             })
             .then(
-                res => {
-                    const html = HtmlObjectTransform.getTextHtml(res.html, iframe);
-                this.props.iframeLoaded(html);
-                return html;
+                (res) => {
+                    return HtmlObjectTransform.getTextHtml(res.html, iframe);
+
                 }
             )
 
 
-            //.then(res => DOMHelper.parseStrToDOM(res.data))
+            .then((html) => {this.props.iframeLoaded(html);
+                            return html})
+
             .then(res => DOMHelper.wrapTextNodes(res))
             .then(res => DOMHelper.wrapImages(res))
             .then(res => DOMHelper.addSectionPanel(res))
             .then(dom => {
                 this.props.virtualDomLoaded(dom);
+
                 return dom;
             })
             .then(res => DOMHelper.serializeDOMToString(res))
@@ -139,8 +142,9 @@ class CreateSection extends Component{
         iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
             const id = element.getAttribute("deleteSectionId");
             const virtualElement = this.props.virtualDom.querySelector(`[deleteSectionId="${id}"]`);
-            element.addEventListener('hover', (e)=> {
+            element.addEventListener('mouseover', (e)=> {
                 element.style.opacity = '1';
+                element.style.cursor = 'pointer';
             });
             element.addEventListener('click', (e)=> {
                 UIkit.modal.confirm("Вы действительно хотите далить блок из структуры сайта? " +
@@ -320,7 +324,6 @@ class CreateSection extends Component{
     render() {
         const {loading, favoriteIframes, themes} = this.props;
 
-
         let isSpinner;
         if(loading){
             isSpinner =  <Spinner/>;
@@ -328,6 +331,7 @@ class CreateSection extends Component{
 
         const modal = true;
         const modal1 = true;
+        const modal_slider = true;
         const placeholder = "Введите название отложенного варианта";
         return (
             <>
@@ -340,6 +344,7 @@ class CreateSection extends Component{
                              openFavoriteIframe = {this.openFavoriteIframe} deleteIframe = {this.deleteIframe}/>
                 <ThemeModal themes={themes} modal={modal} selectColor={this.selectColor} target={'theme-modal'}/>
                 <FontModal modal={modal} target={'font-modal'} chooseFontStyle={this.chooseFontStyle}/>
+                <SliderModal modal={modal_slider} target={'slider-modal'}/>
                 </>
         )
     }

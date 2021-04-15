@@ -54,7 +54,6 @@ export default class DOMHelper {
             const deleteButtonWrapper = document.createElement('delete-section');
             deleteButtonWrapper.style.position = 'absolute';
             deleteButtonWrapper.style.opacity = '.8';
-            deleteButtonWrapper.style.border = 'none';
             deleteButtonWrapper.style.top = '0';
             deleteButtonWrapper.style.right = '0';
             deleteButtonWrapper.style.padding = '10px';
@@ -64,6 +63,7 @@ export default class DOMHelper {
             deleteButtonWrapper.innerHTML = 'Удалить блок';
             deleteButtonWrapper.setAttribute('deleteSectionId', i);
             node.appendChild(deleteButtonWrapper);
+
             //const button = document.getElementById(`deleteSectionId_${i}`);
             //document.addEventListener('click', (e) => {
                 //if(e.target && e.target.tagName === 'BUTTON' &&  e.target.id === `deleteSectionId_${i}`){
