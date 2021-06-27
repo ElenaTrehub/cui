@@ -45,6 +45,8 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "git": "^0.1.5",
+    "react-facebook-login": "^4.1.1",
     "styles-loader": "^2.0.0",
     "ttf-loader": "^1.0.2",
     "uikit": "^3.6.15"

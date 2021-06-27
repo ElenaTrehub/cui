@@ -29,6 +29,7 @@ import "uikit/dist/css/uikit.min.css";
 import ThemeModal from "../theme-modal/theme-modal";
 import FontModal from "../font-modal/font-modal"
 import SliderModal from "../slider-modal/slider-modal";
+import MenuModal from "../menu-modal/menu-modal";
 
 class CreateSection extends Component{
 
@@ -139,26 +140,58 @@ class CreateSection extends Component{
     }
 
     enableDeleteSectionButton(iframe) {
-        iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
-            const id = element.getAttribute("deleteSectionId");
-            const virtualElement = this.props.virtualDom.querySelector(`[deleteSectionId="${id}"]`);
-            element.addEventListener('mouseover', (e)=> {
-                element.style.opacity = '1';
-                element.style.cursor = 'pointer';
+
+            iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
+                const id = element.getAttribute("deleteSectionId");
+                const virtualElement = this.props.virtualDom.querySelector(`[deleteSectionId="${id}"]`);
+
+                const delButton = element.querySelector(".delete-button");
+                const changeButton = element.querySelector('.change-button');
+
+
+                delButton.addEventListener('mouseover', (e)=> {
+                    delButton.style.opacity = '1';
+                    delButton.style.cursor = 'pointer';
+                });
+                changeButton.addEventListener('mouseover', (e)=> {
+                    changeButton.style.opacity = '1';
+                    changeButton.style.cursor = 'pointer';
+                });
+                delButton.addEventListener('mouseleave', (e)=> {
+                    delButton.style.opacity = '.8';
+                });
+                changeButton.addEventListener('mouseleave', (e)=> {
+                    changeButton.style.opacity = '.8';
+
+                });
+                changeButton.addEventListener('click', (e)=> {
+
+
+                    if (element.parentElement.classList.contains('header')){
+                        changeButton.setAttribute('uk-toggle', 'target: #menu-modal');
+                        UIkit.modal('#menu-modal').toggle();
+                    }
+                    else if(element.parentElement.classList.contains('main')){
+
+                        changeButton.setAttribute('uk-toggle', 'target: #slider-modal');
+                        UIkit.modal('#slider-modal').toggle();
+                    }
+
+
+
+                });
+                delButton.addEventListener('click', (e)=> {
+                    UIkit.modal.confirm("Вы действительно хотите далить блок из структуры сайта? " +
+                        "Все несохраненные данные будут потеряны!", {labels: {ok: "Удалить", cancel: 'Отмена'}})
+                        .then(() => {
+                            element.parentNode.remove();
+                            virtualElement.parentNode.remove();
+
+                        })
+
+
+                });
             });
-            element.addEventListener('click', (e)=> {
-                UIkit.modal.confirm("Вы действительно хотите далить блок из структуры сайта? " +
-                    "Все несохраненные данные будут потеряны!", {labels: {ok: "Удалить", cancel: 'Отмена'}})
-                    .then(() => {
-                        element.parentNode.remove();
-                        virtualElement.parentNode.remove();
-
-                    })
-
-
-            });
-        });
-
 
     }
     injectStyles(iframe) {
@@ -321,6 +354,30 @@ class CreateSection extends Component{
 
     };
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+        if(prevProps !== this.props){
+
+            if(this.props.changePanelShow !== false){
+                const iframe = document.querySelector('iframe');
+
+                //console.log(iframe.contentDocument);
+                iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
+                    element.style.opacity = '.8';
+                });
+
+            }
+            else{
+                const iframe = document.querySelector('iframe');
+
+                iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
+                    element.style.opacity = '0';
+                });
+            }
+        }
+
+    }
+
     render() {
         const {loading, favoriteIframes, themes} = this.props;
 
@@ -328,6 +385,9 @@ class CreateSection extends Component{
         if(loading){
             isSpinner =  <Spinner/>;
         }
+
+
+
 
         const modal = true;
         const modal1 = true;
@@ -345,6 +405,7 @@ class CreateSection extends Component{
                 <ThemeModal themes={themes} modal={modal} selectColor={this.selectColor} target={'theme-modal'}/>
                 <FontModal modal={modal} target={'font-modal'} chooseFontStyle={this.chooseFontStyle}/>
                 <SliderModal modal={modal_slider} target={'slider-modal'}/>
+                <MenuModal modal={modal_slider} target={'menu-modal'}/>
                 </>
         )
     }
@@ -356,7 +417,8 @@ const mapStateToProps = (state) => {
         virtualDom: state.virtualDom,
         favoriteIframes: state.favoriteIframes,
         currentTheme: state.currentTheme,
-        themes: state.themes
+        themes: state.themes,
+        changePanelShow: state.changePanelShow
     }
 };
 const mapDispatchToProps = {

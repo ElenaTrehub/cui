@@ -8,6 +8,7 @@ const inintialState = {
     imageLoading: false,
     imageLoaded: false,
     virtualDom: '',
+    changePanelShow: false,
     favoriteIframes: [],
     themes: [{name: 'initial', color: 'grey'},{name: 'ocean', color: 'blue'}, {name: 'rose', color: 'red'}],
     currentTheme: {name: 'initial', color: 'grey'},
@@ -33,6 +34,11 @@ const reducer = (state = inintialState, action) => {
                 loading: false,
                 error: false
             };
+        case 'IS_CHANGE_PANEL_SHOW':
+            return{
+                ...state,
+                changePanelShow: !state.changePanelShow
+            }
         case 'RUBRICS_REQUESTED':
             return {
                 ...state,

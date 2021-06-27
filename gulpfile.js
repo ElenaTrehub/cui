@@ -10,7 +10,8 @@ const gulp = require('gulp'),
     postCSS = require('gulp-postcss');
 
 
-const dist = 'C:/OpenServer/OSPanel/domains/cui-admin';
+//const dist = 'C:/OpenServer/OSPanel/domains/cui-admin';
+const dist = 'C:/OpenServer/domains/cui-admin';
 const prod = './build';
 gulp.task('copy-html', () => {
     return gulp.src('./app/src/index.html')

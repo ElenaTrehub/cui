@@ -53,15 +53,47 @@ export default class DOMHelper {
             node.style.position = 'relative';
             const deleteButtonWrapper = document.createElement('delete-section');
             deleteButtonWrapper.style.position = 'absolute';
-            deleteButtonWrapper.style.opacity = '.8';
+            deleteButtonWrapper.style.opacity = '0';
             deleteButtonWrapper.style.top = '0';
             deleteButtonWrapper.style.right = '0';
             deleteButtonWrapper.style.padding = '10px';
             deleteButtonWrapper.style.zIndex = '1000';
-            deleteButtonWrapper.style.backgroundColor = 'red';
-            deleteButtonWrapper.style.color = 'white';
-            deleteButtonWrapper.innerHTML = 'Удалить блок';
+            deleteButtonWrapper.style.backgroundColor = 'rgba(192, 192, 192, .9)';
             deleteButtonWrapper.setAttribute('deleteSectionId', i);
+            deleteButtonWrapper.style.borderRadius = '0 0 0 4px';
+
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-button uk-button';
+            deleteButton.style.backgroundColor = '#E52B50';
+            deleteButton.style.color = 'white';
+            deleteButton.innerHTML = 'Удалить блок';
+            deleteButton.style.border = 'none';
+            deleteButton.style.borderRadius = '4px';
+            deleteButton.style.outline = 'none';
+            deleteButton.style.padding = '6px';
+            deleteButton.style.marginRight = '10px';
+            deleteButton.style.fontSize = '12px';
+            deleteButton.style.opacity = '.8';
+            deleteButton.style.transition = 'all .3s';
+
+
+            const changeButton = document.createElement('button');
+            changeButton.className = 'change-button uk-button';
+            changeButton.style.backgroundColor = '#256D7B';
+            changeButton.style.color = 'white';
+            changeButton.innerHTML = 'Редактировать блок';
+            changeButton.style.border = 'none';
+            changeButton.style.borderRadius = '4px';
+            changeButton.style.outline = 'none';
+            changeButton.style.padding = '6px';
+            changeButton.style.fontSize = '12px';
+            changeButton.style.opacity = '.8';
+            changeButton.style.transition = 'all .3s';
+            changeButton.setAttribute('type', 'button');
+
+            deleteButtonWrapper.appendChild(deleteButton);
+            deleteButtonWrapper.appendChild(changeButton);
             node.appendChild(deleteButtonWrapper);
 
             //const button = document.getElementById(`deleteSectionId_${i}`);

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import SlideItem from "../slide-item";
+
 import DOMHelper from "../../helpers/dom-helper";
 import HtmlObjectTransform from "../../helpers/htmlObjectTransform";
 import EditorText from "../editor-text";

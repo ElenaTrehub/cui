@@ -80,6 +80,11 @@ const chooseCurrentFontStyle = (fontsObj) => {
         payload: fontsObj
     }
 };
+const isChangePanelShow = () => {
+    return {
+        type: 'IS_CHANGE_PANEL_SHOW'
+    }
+}
 export {
     rubricsLoaded,
     rubricsRequested,
@@ -94,6 +99,7 @@ export {
     favoriteIframeAdd,
     deleteFavoriteIframe,
     chooseCurrentTheme,
-    chooseCurrentFontStyle
+    chooseCurrentFontStyle,
+    isChangePanelShow
 
 };
