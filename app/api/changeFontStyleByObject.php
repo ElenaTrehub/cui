@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 
 //if($_SESSION["auth"] != true){
 //header("HTTP/1.0 403 Forbidden");
@@ -13,12 +13,16 @@ if(!is_dir('../userDir')) {
 }
 $file = "../userDir/fontStyle.css";
 
-if($_POST['fontStyle']){
-    $style = '.mainHeading{font-family:"'.$_POST['fontStyle']['mainHeadingFont'].'";
-  font-size:'.$_POST["fontStyle"]['mainHeadingSize'].';}.secondHeading{font-family:"'.$_POST["fontStyle"]['secondHeadingFont'].
-        '";font-size:'.$_POST["fontStyle"]['secondHeadingSize'].';}.textFont{font-family:"'.$_POST["fontStyle"]['textFont'].
-        '";font-size:'.$_POST["fontStyle"]['textSize'].';}.menuFont{font-family:"'.$_POST["fontStyle"]['menuFont'].
-        '";font-size:'.$_POST["fontStyle"]['menuSize'].';}';
+if($_POST['styleObj']){
+    $style = '.h1{font-family:"'.$_POST['styleObj']['h1Type'].'"; font-size:'.$_POST["styleObj"]['h1Size'].';}
+    .h2{font-family:"'.$_POST['styleObj']['h2Type'].'"; font-size:'.$_POST["styleObj"]['h2Size'].';}
+    .h3{font-family:"'.$_POST['styleObj']['h3Type'].'"; font-size:'.$_POST["styleObj"]['h3Size'].';}
+    .h4{font-family:"'.$_POST['styleObj']['h4Type'].'"; font-size:'.$_POST["styleObj"]['h4Size'].';}
+    .textSize{font-family:"'.$_POST['styleObj']['textType'].'"; font-size:'.$_POST["styleObj"]['textSize'].';}
+    .linkSize{font-family:"'.$_POST['styleObj']['linkType'].'"; font-size:'.$_POST["styleObj"]['linkSize'].';}
+    .bigSize{font-family:"'.$_POST['styleObj']['bigType'].'"; font-size:'.$_POST["styleObj"]['bigSize'].';}';
+
+
     if(file_get_contents($file)){
         file_put_contents($file, '');
     }

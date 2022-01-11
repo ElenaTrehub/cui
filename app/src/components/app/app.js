@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
-import {MainPage, RubricsPage, SupportPage, CreatePage} from '../pages';
+import {MainPage, RubricsPage, SupportPage, CreatePage, ChooseSiteType} from '../pages';
 import Register from "../register";
 import Login from "../login";
 
@@ -13,7 +13,8 @@ const App = () => {
                 <Route path='/register' component={Register}/>
                 <Route path='/rubrics' component={RubricsPage}/>
                 <Route path='/support' component={SupportPage}/>
-                <Route path='/rubric/:id' render={props => <CreatePage {...props}/>}/>
+                <Route path='/chooseSiteType/:id' render={props => <ChooseSiteType {...props}/>}/>
+                <Route path='/:id/:site' render={props => <CreatePage {...props}/>}/>
             </Switch>
         </div>
 

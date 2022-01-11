@@ -10,6 +10,8 @@ import CreatorService from "./services/creatorService";
 import {BrowserRouter as Router} from 'react-router-dom';
 import App from "./components/app/app";
 
+
+
 const creatorService = new CreatorService();
 
 ReactDOM.render(

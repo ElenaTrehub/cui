@@ -1,7 +1,9 @@
 HTMLIFrameElement.prototype.load = function (url, callback) {
     const iframe = this;
     try {
-        iframe.src = url + "?rnd=" + Math.random().toString().substring(2);
+
+        //iframe.src = url + "?rnd=" + Math.random().toString().substring(2);
+        iframe.src = url;
     } catch (error) {
         if (!callback) {
             return new Promise((resolve, reject) => {

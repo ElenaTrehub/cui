@@ -7,21 +7,25 @@ const inintialState = {
     isChange: false,
     imageLoading: false,
     imageLoaded: false,
-    virtualDom: '',
+    virtualDom: [],
     changePanelShow: false,
     favoriteIframes: [],
-    themes: [{name: 'initial', color: 'grey'},{name: 'ocean', color: 'blue'}, {name: 'rose', color: 'red'}],
-    currentTheme: {name: 'initial', color: 'grey'},
-    currentFontStyle: {
-        mainHeadingFont: 'RobotoRegular',
-        mainHeadingSize: '32px',
-        secondHeadingFont : 'RobotoRegular',
-        secondHeadingSize: '20px',
-        textFont: 'RobotoRegular',
-        textSize: '14px',
-        menuFont: 'RobotoRegular',
-        menuSize: '14px'
-    }
+    changeSectionName: '',
+    themes: [{name: 'normal', ru: 'нормальная', en: 'normal'},
+        {name: 'dark', ru: 'темная', en: 'dark'},
+        {name: 'light', ru: 'светлая', en: 'light'},
+        {name: 'any', ru: 'любая', en: 'any'}],
+    currentTheme: {name: 'normal', ru: 'нормальная', en: 'normal'},
+    currentFontStyle: {},
+    siteStyles: [{name: 'all', ru: 'все стили', en: 'all styles'},
+        {name: 'minimalism', ru: 'минимализм', en: 'minimalism'},
+        {name: 'classic', ru: 'классический', en: 'classic'},
+        {name: 'corporate', ru: 'корпоративный', en: 'corporate'},
+        {name: 'hi tech', ru: 'хай тек', en: 'hi tech'}
+    ],
+    currentSiteStyle: {name: 'classic', ru: 'классический', en: 'classic'},
+    currentRubric: -1,
+    currentSiteType: ''
 
 };
 
@@ -88,6 +92,12 @@ const reducer = (state = inintialState, action) => {
                 imageLoaded: true
             };
         case 'VIRTUAL_DOM_LOADED':
+            let newVirtualDom = [...state.virtualDom, action.payload];
+            return {
+                ...state,
+                virtualDom: newVirtualDom
+            };
+        case 'VIRTUAL_DOM_CHANGED':
             return {
                 ...state,
                 virtualDom: action.payload
@@ -132,6 +142,29 @@ const reducer = (state = inintialState, action) => {
             return {
                 ...state,
                 currentFontStyle: action.payload
+            };
+        case 'CURRENT_RUBRIC_CHOOSE':
+            return {
+                ...state,
+                currentRubric: action.payload
+            };
+        case 'CURRENT_SITE_TYPE_CHOOSE':
+
+            return {
+                ...state,
+                currentSiteType: action.payload
+            };
+        case 'CURRENT_SITE_STYLE_CHOOSE':
+
+            return {
+                ...state,
+                currentSiteStyle: action.payload
+            };
+        case 'CHOOSE_CHANGE_SECTION_NAME':
+
+            return {
+                ...state,
+                changeSectionName: action.payload
             };
         default:
             return state;

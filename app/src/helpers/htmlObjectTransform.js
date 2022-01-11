@@ -2,7 +2,7 @@ export default class HtmlObjectTransform{
     static getTextHtml(obj, parentBlock){
         //console.log(obj);
         const block = document.createElement(obj.tagName);
-
+        //console.log(block);
         if(obj.className){
             if(obj.className.includes(' ')){
                 const strArray = obj.className.split(' ');
@@ -61,6 +61,9 @@ export default class HtmlObjectTransform{
         if(obj["aria-hidden"]){
             block.setAttribute('aria-hidden', obj["aria-hidden"]);
         }
+        if(obj["data-page"]){
+            block.setAttribute('data-page', obj["data-page"]);
+        }
         if(obj.tabindex){
             block.setAttribute('tabindex', obj.tabindex);
         }
@@ -71,12 +74,12 @@ export default class HtmlObjectTransform{
                 this.getTextHtml(elem, block);
             })
         }
-
+//console.log(block);
         return block;
 
     }
     static async buildCssFile(style){
-        const res = await fetch("../api/createCssPage.php", {
+        const res = await fetch("../../api/createCssPage.php", {
             method: 'POST',
             body: JSON.stringify({css: style})
         });
@@ -91,9 +94,9 @@ export default class HtmlObjectTransform{
 
      static async changeFontStyleFileByObject(obj){
 
-        const res = await fetch("../api/changeFontStyleByObject.php", {
+        const res = await fetch("../../api/changeFontStyleByObject.php", {
             method: 'POST',
-            body: JSON.stringify({fontStyle: obj})
+            body: JSON.stringify({styleObj: obj})
         });
 
         if(!res.ok){
@@ -106,7 +109,7 @@ export default class HtmlObjectTransform{
     };
     static async buildThemeFile(fileName){
 
-        const res = await fetch("../api/createThemePage.php", {
+        const res = await fetch("../../api/createThemePage.php", {
             method: 'POST',
             body: JSON.stringify({name: fileName})
         });
@@ -119,11 +122,11 @@ export default class HtmlObjectTransform{
             return 1;
         }
     }
-    static async buildFontFile(fileName){
+    static async buildFontFile(fileStyle){
 
-        const res = await fetch("../api/createFontPage.php", {
+        const res = await fetch("../../api/createFontPage.php", {
             method: 'POST',
-            body: JSON.stringify({name: fileName})
+            body: JSON.stringify({styleObj: fileStyle})
         });
         if(!res.ok){
             throw  new Error(`Could not fetch,
@@ -134,7 +137,7 @@ export default class HtmlObjectTransform{
         }
     }
     static async buildJsFile(script){
-        const res = await fetch("../api/createJsFile.php", {
+        const res = await fetch("../../api/createJsFile.php", {
             method: 'POST',
             body: JSON.stringify({js: script})
         });
@@ -151,9 +154,19 @@ export default class HtmlObjectTransform{
     static getObjectIframeFromHtml(iframe){
         function getAttributesName(elem){
             let objElem = {};
-            //console.log(elem.nodeName);
+
+            if(elem.childNodes.length > 0){
+
+                for(let i=0; i < elem.childNodes.length; i++){
+
+                    if(elem.childNodes[i].nodeName === '#text' && elem.childNodes[i].textContent.indexOf("\n")!==-1 && /[a-mo-zа-я1-9]/.test(elem.childNodes[i].textContent)!==true){
+                        elem.removeChild(elem.childNodes[i]);
+                    }
+                }
+            }
+
             if(elem.nodeName !== "#text" && elem.nodeName !=="I" && elem.nodeName !== "BR" && elem.nodeName !== undefined){
-                //console.log(objElem.nodeName);
+
                 objElem.tagName = elem.tagName;
 
             }
@@ -185,13 +198,15 @@ export default class HtmlObjectTransform{
                 objElem.href = elem.getAttribute('href');
             }
 
+
+
             if(elem.tagName === 'A' && elem.innerHTML.length > 0){
                 objElem.link = elem.innerHTML;
             }
             if(((elem.tagName === 'P' || elem.tagName === 'H1' ||
                 elem.tagName === 'H2' || elem.tagName === 'H3' || elem.tagName === 'H4'
                 || elem.tagName === 'H5' || elem.tagName === 'H6' || elem.tagName === 'SPAN' || elem.tagName === 'BUTTON')
-                && elem.innerHTML.length > 0) || (elem.tagName === 'DIV' && elem.childNodes[0].nodeName === "#text")){
+                && elem.innerHTML.length > 0) || (elem.tagName === 'DIV' && elem.childNodes[0].nodeName === "#text") || (elem.tagName === 'DIV' && elem.childNodes[0].nodeName === "I")){
                 objElem.content = elem.innerHTML;
             }
             if(elem.nodeType == 1 && elem.hasAttribute('name')){
@@ -212,6 +227,9 @@ export default class HtmlObjectTransform{
             if(elem.nodeType == 1 && elem.hasAttribute('width')){
                 objElem.width = elem.getAttribute('width');
             }
+            if(elem.nodeType == 1 && elem.hasAttribute('value')){
+                objElem.value = elem.getAttribute('value');
+            }
             if(elem.nodeType == 1 && elem.hasAttribute('height')){
                 objElem.height = elem.getAttribute('height');
             }
@@ -227,9 +245,14 @@ export default class HtmlObjectTransform{
             if(elem.nodeType == 1 && elem.hasAttribute('tabindex')){
                 objElem.tabindex = elem.getAttribute('tabindex');
             }
+            if(elem.nodeType == 1 && elem.hasAttribute('data-page')){
+                objElem['data-page'] = elem.getAttribute('data-page');
+            }
+
             return objElem;
         }
         function recurcy(dom, parentNoda = null){
+
             let obj = getAttributesName(dom);
 
             //console.log(obj);

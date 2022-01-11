@@ -2,10 +2,9 @@ import React, {Component} from 'react';
 import Header from "../header";
 import Panel from "../panel";
 import CreateSection from "../create-section/create-section";
-import { Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
+import { Container, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import WithCreateService from "../hoc";
-import ThemeModal from "../theme-modal/theme-modal";
-import ChooseModal from "../choose-modal";
+
 import {connect} from "react-redux";
 import {
     isChangePanelShow
@@ -33,46 +32,58 @@ class CreatePage extends Component{
         const modal = true;
 
         let textChangePanel = '';
+        let textAddSection = '';
+
+        // if(this.props.currentSiteType === 'landing'){
+        //     textAddSection = 'Добавить секцию';
+        // }
+        // if(this.props.currentSiteType === 'manyPage'){
+        //     textAddSection = 'Добавить страницу';
+        // }
+
         if(this.props.changePanelShow){
-            textChangePanel = 'Выключить редактирование'
+            textChangePanel = 'Выключить редактирование';
         }
         else{
-            textChangePanel = 'Включить редактирование'
+            textChangePanel = 'Включить редактирование';
         }
         return (
 
             <>
                 <Header menu={menu} user={user}/>
                 <Panel/>
+
                 <Row>
                     <Col xs="2">
-                        <Nav vertical>
-                            <NavItem>
-                                <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #theme-modal" >Выбор темы шаблона</button>
-                            </NavItem>
+                                <Nav vertical>
+                                    <NavItem>
+                                        <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #setting-site-modal">Общие настройки сайта</button>
+                                    </NavItem>
 
-                            <NavItem>
-                                <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #font-modal" >Настройка шрифтов</button>
-                            </NavItem>
-                            <NavItem>
-                                <button onClick={this.props.isChangePanelShow} className="uk-button uk-button-default uk-margin-small-right" type="button">{textChangePanel}</button>
-                            </NavItem>
-                            {/*<NavItem>
-                                <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #slider-modal" >Настройка слайдера</button>
-                            </NavItem>*/}
-                            {/*<NavItem>
-                                <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #menu-modal" >Настройка меню</button>
-                            </NavItem>*/}
-                            <NavItem>
-                                <NavLink disabled href="#">Disabled Link</NavLink>
-                            </NavItem>
-                        </Nav>
-                    </Col>
+                                    <NavItem>
+                                        <button onClick={this.props.isChangePanelShow} className="uk-button uk-button-default uk-margin-small-right" type="button">{textChangePanel}</button>
+                                    </NavItem>
+                                    <NavItem>
+                                        <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #add-element-modal">Добавить элемент</button>
+                                    </NavItem>
+                                    {/*<NavItem>
+                                    <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #slider-modal" >Настройка слайдера</button>
+                                </NavItem>*/}
+                                    {/*<NavItem>
+                                    <button className="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #menu-modal" >Настройка меню</button>
+                                </NavItem>*/}
+                                    <NavItem>
+                                        <NavLink disabled href="#">Disabled Link</NavLink>
+                                    </NavItem>
+                                </Nav>
+                            </Col>
 
                     <Col xs="10">
                         <CreateSection {...this.props}/>
                     </Col>
                 </Row>
+
+
 
             </>
         )
@@ -83,7 +94,8 @@ class CreatePage extends Component{
 };
 const mapStateToProps = (state) => {
     return {
-        changePanelShow: state.changePanelShow
+        changePanelShow: state.changePanelShow,
+        currentSiteType: state.currentSiteType
     }
 }
 const mapDispatchToProps = {

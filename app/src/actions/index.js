@@ -50,7 +50,12 @@ const virtualDomLoaded = (newDom) => {
         payload: newDom
     }
 };
-
+const virtualDomChanged = (newDom) => {
+    return {
+        type: 'VIRTUAL_DOM_CHANGED',
+        payload: newDom
+    }
+};
 const iframeIsChange = () => {
     return {
         type: 'IFRAME_IS_CHANGE'
@@ -85,6 +90,32 @@ const isChangePanelShow = () => {
         type: 'IS_CHANGE_PANEL_SHOW'
     }
 }
+
+
+const chooseCurrentRubric = (rubricId) => {
+    return {
+        type: 'CURRENT_RUBRIC_CHOOSE',
+        payload: rubricId
+    }
+};
+const chooseCurrentSiteType = (siteType) => {
+    return {
+        type: 'CURRENT_SITE_TYPE_CHOOSE',
+        payload: siteType
+    }
+};
+const chooseCurrentSiteStyle = (siteStyle) => {
+    return {
+        type: 'CURRENT_SITE_STYLE_CHOOSE',
+        payload: siteStyle
+    }
+};
+const chooseChangeSectionName = (newSectionName) => {
+    return {
+        type: 'CHOOSE_CHANGE_SECTION_NAME',
+        payload: newSectionName
+    }
+};
 export {
     rubricsLoaded,
     rubricsRequested,
@@ -100,6 +131,11 @@ export {
     deleteFavoriteIframe,
     chooseCurrentTheme,
     chooseCurrentFontStyle,
-    isChangePanelShow
+    isChangePanelShow,
+    chooseCurrentRubric,
+    chooseCurrentSiteType,
+    chooseCurrentSiteStyle,
+    virtualDomChanged,
+    chooseChangeSectionName
 
 };

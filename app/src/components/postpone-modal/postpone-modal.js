@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+ import React, {Component} from 'react';
 import "uikit/dist/css/uikit.min.css";
 import "uikit/dist/js/uikit.js";
 import DOMHelper from "../../helpers/dom-helper";
@@ -21,7 +21,7 @@ class PostponeModal extends Component{
             postponeIframe: {
                 name: '',
                 obj: {
-                    html: {},
+                    html: [],
                     css: '',
                     theme: '',
                     script: '',
@@ -119,10 +119,22 @@ class PostponeModal extends Component{
                     isRepeatName: false
                 }
             });
-            const newDom = this.props.virtualDom.cloneNode(this.props.virtualDom);
-            DOMHelper.unwrapTextNodes(newDom);
-            DOMHelper.unwrapImages(newDom);
-            let iframeFromHTML =  HtmlObjectTransform.getObjectIframeFromHtml(newDom);
+            let pageArray = [];
+            //console.log(this.props.virtualDom);
+            this.props.virtualDom.forEach((item) => {
+                let objIframe = {};
+                objIframe.name = item.name;
+
+                const newDom = item.html.cloneNode(true);
+                //DOMHelper.unwrapTextNodes(newDom);
+                //DOMHelper.unwrapImages(newDom);
+                let iframeFromHTML =  HtmlObjectTransform.getObjectIframeFromHtml(newDom);
+                //
+                //console.log(iframeFromHTML);
+                objIframe.html = iframeFromHTML;
+                pageArray.push(objIframe);
+            });
+
 
             let style = '';
             let script = '';
@@ -151,7 +163,7 @@ class PostponeModal extends Component{
                 const newPostponeIframe = {
                     ...postponeIframe,
                     obj: {
-                        html: iframeFromHTML,
+                        html: pageArray,
                         css: style,
                         theme: this.props.currentTheme.name,
                         script: script,

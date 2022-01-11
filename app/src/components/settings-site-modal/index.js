@@ -1,2 +1,2 @@
-import CustomizationModal from "./customization-modal";
-export default CustomizationModal;
+import SettingsSiteModal from "./settings-site-modal";
+export default SettingsSiteModal;

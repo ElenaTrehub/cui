@@ -39,12 +39,18 @@ export default class DOMHelper {
         let sections = [];
 
         function addButtonToSection(element) {
-            element.childNodes.forEach(node => {
+            if(element.nodeName === "SECTION"){
+                sections.push(element);
+            }
+            else{
+                element.childNodes.forEach(node => {
 
-                if(node.nodeName === "SECTION") {
-                    sections.push(node);
-                }
-            })
+                    if(node.nodeName === "SECTION" || node.nodeName === "HEADER" || node.nodeName === "FOOTER") {
+                        sections.push(node);
+                    }
+                })
+            }
+
         };
 
         addButtonToSection(body);
@@ -92,8 +98,25 @@ export default class DOMHelper {
             changeButton.style.transition = 'all .3s';
             changeButton.setAttribute('type', 'button');
 
+
+            const sectionListButton = document.createElement('button');
+            sectionListButton.className = 'section-list-button uk-button';
+            sectionListButton.style.backgroundColor = 'blue';
+            sectionListButton.style.color = 'white';
+            sectionListButton.innerHTML = 'Заменить';
+            sectionListButton.style.border = 'none';
+            sectionListButton.style.borderRadius = '4px';
+            sectionListButton.style.outline = 'none';
+            sectionListButton.style.padding = '6px';
+            sectionListButton.style.fontSize = '12px';
+            sectionListButton.style.opacity = '.8';
+            sectionListButton.style.transition = 'all .3s';
+            sectionListButton.style.marginLeft = '10px';
+            sectionListButton.setAttribute('type', 'button');
+
             deleteButtonWrapper.appendChild(deleteButton);
             deleteButtonWrapper.appendChild(changeButton);
+            deleteButtonWrapper.appendChild(sectionListButton);
             node.appendChild(deleteButtonWrapper);
 
             //const button = document.getElementById(`deleteSectionId_${i}`);
