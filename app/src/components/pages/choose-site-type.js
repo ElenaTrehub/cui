@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Button, Container, Jumbotron} from "reactstrap";
 import {Link} from "react-router-dom";
+import {FormattedMessage} from "react-intl";
+import {connect} from "react-redux";
 
 class ChooseSiteType extends Component{
     constructor(props) {
@@ -20,7 +22,8 @@ class ChooseSiteType extends Component{
 
     };
     render() {
-        const idRubrics = +this.props.match.params.id;
+        const idSubRubrics = +this.props.match.params.id;
+
         const {site} = this.state;
         let disabled;
         site !== '' ? disabled = false : disabled = true;
@@ -30,26 +33,26 @@ class ChooseSiteType extends Component{
             <section className="main-section">
                 <Container>
                     <Jumbotron>
-                        <h3 className="display-3">Выбор формата сайта</h3>
-                        <p className="lead">Вы можете выбрать один из указанных форматов сайта: Landing Page (одностраничный сайт) или многостраничный сайт.</p>
+                        <h3 className="display-3"><FormattedMessage id='choose_format_site'/></h3>
+                        <p className="lead"><FormattedMessage id='choose_format_text'/></p>
                         <hr className="my-2" />
                         <form className="uk-form-horizontal uk-margin-large">
 
                             <div className="uk-margin">
-                                <div className="uk-form-label">Формат сайта</div>
+                                <div className="uk-form-label"><FormattedMessage id='choose_format_p'/></div>
                                 <div className="uk-form-controls uk-form-controls-text">
                                     <label><input className="uk-radio" onClick={this.siteTypeChange}
                                                   type="radio"
-                                                  name="radio1" value='landing'/> Landing Page (одностраничный сайт)</label><br/>
+                                                  name="radio1" value='landing'/> <FormattedMessage id='choose_format_landing'/></label><br/>
                                     <label><input className="uk-radio" onClick={this.siteTypeChange}
                                                   type="radio"
-                                                  name="radio1" value='manyPage'/> Многостраничный сайт</label>
+                                                  name="radio1" value='manyPage'/> <FormattedMessage id='choose_format_many_page'/></label>
                                 </div>
                             </div>
 
                             <p className="lead">
-                                <Link to={`/${idRubrics}/${site}`}>
-                                    <Button disabled={disabled} color="primary">Создать сайт</Button>
+                                <Link to={`/${idSubRubrics}/${site}/${this.props.currentLang}`}>
+                                    <Button disabled={disabled} color="primary"><FormattedMessage id='btn_create_site'/></Button>
                                 </Link>
                             </p>
                         </form>
@@ -64,5 +67,14 @@ class ChooseSiteType extends Component{
 
 
 }
+const mapStateToPops = (state) => {
+    return {
+        currentLang: state.currentLang
+    }
+};
 
-export default ChooseSiteType;
+const mapDispatchToProps =  {
+
+};
+
+export default connect(mapStateToPops, mapDispatchToProps)(ChooseSiteType);

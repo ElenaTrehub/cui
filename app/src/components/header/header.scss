@@ -1,3 +1,4 @@
+@import '../../../settings/var';
 .logo{
   font-size: 36px;
   font-weight: bold;
@@ -43,5 +44,24 @@
   & a:hover{
     color: #555555;
     text-decoration: none;
+  }
+}
+.header-menu__lang{
+  margin-left: 30px;
+  select{
+    font-size: 16px;
+    border: none;
+    padding-right: 4px;
+    color: #555555;
+   }
+  select:focus{
+    border: none;
+  }
+  select:focus-visible{
+    border: none;
+    outline: none;
+  }
+  option{
+
   }
 }

@@ -39,16 +39,24 @@ class AddElementModal extends Component{
 
     addNewSection = () => {
         const {nameCreateSection} = this.state;
-        const {CreatorService, currentSiteStyle, currentRubric, currentSiteType, currentTheme} = this.props;
+        const {CreatorService, currentSiteStyle, currentRubric, currentSiteType, currentTheme, libs} = this.props;
 
         const iframe = document.querySelector('iframe');
-
+        const page = iframe.contentDocument.body.getAttribute('data-page');
         CreatorService.getAddSection(currentRubric, nameCreateSection, currentSiteStyle.name, currentSiteType, currentTheme.name)
             .then((res) => {
-console.log(res);
+
+                let section = '';
+                if(nameCreateSection !== 'header' && nameCreateSection !== 'footer'){
+                    section = page + '-' + nameCreateSection;
+                }
+                else{
+                    section = nameCreateSection;
+                }
+
                 fetch("../../api/addSectionStyle.php", {
                     method: 'POST',
-                    body: JSON.stringify({css: res.css})
+                    body: JSON.stringify({section: section, css: res.css})
                 })
                     .then((result) => {
                         if(!result.ok){
@@ -65,7 +73,6 @@ console.log(res);
 
                 if(nameCreateSection === 'header' || nameCreateSection === 'footer'){
                     let newVirtualDom = [];
-                    const page = iframe.contentDocument.body.getAttribute('data-page');
 
                     let newDom = '';
                     let names = [];
@@ -85,21 +92,32 @@ console.log(res);
 
                         const divs = newSectionWrapper.querySelectorAll('section > div');
 
+
                         const newSection = document.createElement('section');
                         newSection.classList.add(nameCreateSection);
-                        newSection.classList.add('section');
+                        if(nameCreateSection === 'footer'){
+                            newSection.classList.add('section');
+                        }
                         newSection.setAttribute('id', nameCreateSection);
 
                         divs.forEach((item) => {
                             newSection.appendChild(item);
                         })
+
+
                         const sectionWidthPanel = DOMHelper.addSectionPanel(newSection);
-                        if(section === 'header'){
+
+
+                        if(nameCreateSection === 'header'){
                             const theFirstChild = newDom.firstChild;
+                            //const theFirstChildIframe = iframe.contentDocument.body.firstChild;
                             newDom.insertBefore(sectionWidthPanel, theFirstChild);
+                            //iframe.contentDocument.body.insertBefore(sectionIframeWidthPanel, theFirstChildIframe);
                         }
                         else{
+
                             newDom.appendChild(sectionWidthPanel);
+                            //iframe.contentDocument.body.appendChild(sectionIframeWidthPanel);
                         }
 
                         const virtualDomObj = {
@@ -108,13 +126,41 @@ console.log(res);
                         }
                         changedVirtualDom.push(virtualDomObj);
                     })
+                    const newSectionIframeWrapper = document.createElement('section');
+                    newSectionIframeWrapper.innerHTML = res.html;
+
+                    const divsIframe = newSectionIframeWrapper.querySelectorAll('section > div');
+
+                    const newIframeSection = document.createElement('section');
+                    newIframeSection.classList.add(nameCreateSection);
+                    if(nameCreateSection === 'footer'){
+                        newIframeSection.classList.add('section');
+                    }
+
+                    newIframeSection.setAttribute('id', nameCreateSection);
+
+                    divsIframe.forEach((item) => {
+                        newIframeSection.appendChild(item);
+                    })
+                    const sectionIframeWidthPanel = DOMHelper.addSectionPanel(newIframeSection);
 
 
+                    if(nameCreateSection === 'header'){
+                        //const theFirstChild = newDom.firstChild;
+                        const theFirstChildIframe = iframe.contentDocument.body.firstChild;
+                        //newDom.insertBefore(sectionWidthPanel, theFirstChild);
+                        iframe.contentDocument.body.insertBefore(sectionIframeWidthPanel, theFirstChildIframe);
+                    }
+                    else{
+
+                        //newDom.appendChild(sectionWidthPanel);
+                        iframe.contentDocument.body.appendChild(sectionIframeWidthPanel);
+                    }
                     this.props.virtualDomChanged(changedVirtualDom);
                 }
                 else{
                     let newVirtualDom = [];
-                    const page = iframe.contentDocument.body.getAttribute('data-page');
+
 
                     let newDom = '';
                     let name = '';
@@ -129,7 +175,11 @@ console.log(res);
                     const newSectionWrapper = document.createElement('section');
                     newSectionWrapper.innerHTML = res.html;
 
+                    const newSectionIframeWrapper = document.createElement('section');
+                    newSectionIframeWrapper.innerHTML = res.html;
+
                     const divs = newSectionWrapper.querySelectorAll('section > div');
+                    const divsIframe = newSectionIframeWrapper.querySelectorAll('section > div');
 
                     const newSection = document.createElement('section');
                     newSection.classList.add(nameCreateSection);
@@ -139,7 +189,18 @@ console.log(res);
                     divs.forEach((item) => {
                         newSection.appendChild(item);
                     })
+
+                    const newIframeSection = document.createElement('section');
+                    newIframeSection.classList.add(nameCreateSection);
+                    newIframeSection.classList.add('section');
+                    newIframeSection.setAttribute('id', nameCreateSection);
+
+                    divsIframe.forEach((item) => {
+                        newIframeSection.appendChild(item);
+                    })
                     const sectionWidthPanel = DOMHelper.addSectionPanel(newSection);
+                    const sectionIframeWidthPanel = DOMHelper.addSectionPanel(newIframeSection);
+
 
                     const footer = newDom.querySelector('.footer');
                     if(footer){
@@ -147,6 +208,14 @@ console.log(res);
                     }
                     else{
                         newDom.appendChild(sectionWidthPanel);
+                    }
+
+                    const footerIframe = iframe.contentDocument.querySelector('.footer');
+                    if(footerIframe){
+                        iframe.contentDocument.body.insertBefore(sectionIframeWidthPanel, footerIframe);
+                    }
+                    else{
+                        iframe.contentDocument.appendChild(sectionIframeWidthPanel);
                     }
 
 
@@ -176,15 +245,44 @@ console.log(res);
                 return res;
             })
             .then((res) => {
+
+                // let needLibs = [];
+                // console.log(libs);
+                // res.set.libs.forEach((item) => {
+                //     if(libs.indexOf(item) === -1){
+                //         needLibs.push(item);
+                //     }
+                // });
+                // let jsStr = '';
+                // if(needLibs.length > 0){
+                //     jsStr = res.libs + ' ' + res.js;
+                // }
+                // else{
+                //     jsStr = res.js;
+                // }
+
+
                 if(res.js){
+                    let section = '';
+                    if(nameCreateSection !== 'header' && nameCreateSection !== 'footer'){
+                        section = page + '-' + nameCreateSection;
+                    }
+                    else{
+                        section = nameCreateSection;
+                    }
+
+
                     fetch("../../api/addSectionJs.php", {
                         method: 'POST',
-                        body: JSON.stringify({js: res.js})
+                        body: JSON.stringify({section: section, js: '{/*libs-start*/'+res.libs+'/*libs-end*/'+res.js + '}'})
                     })
                         .then((result) => {
                             if(!result.ok){
                                 throw Error(res.statusText)
                             }
+                            // else{
+                            //     this.props.libsSet(needLibs);
+                            // }
 
                         })
                 }
@@ -199,11 +297,44 @@ console.log(res);
                     }
                 })
             })
-            .then(() => this.props.saveSiteChange())
-            .then(() => this.props.isChangePanelShow())
-            .then(() => iframe.load("../userDir/empty.html"))
-            .then(() => iframe.load("../userDir/index.html"))
-            .then(() => this.props.enableEditing(iframe))
+            .then(() => {
+                if(iframe.contentWindow.document.head.querySelector('link[href="style.css"]')){
+                    iframe.contentWindow.document.head.querySelector('link[href="style.css"]').remove();
+                }
+                if(iframe.contentWindow.document.head.querySelector('link[href="example.css"]')){
+                    iframe.contentWindow.document.head.querySelector('link[href="example.css"]').remove();
+                }
+
+                const link = document.createElement('link');
+                link.setAttribute('rel', 'stylesheet');
+                link.setAttribute('href', 'example.css');
+
+                iframe.contentWindow.document.head.append(link);
+
+                if(iframe.contentWindow.document.head.querySelector('script[src="main.js"]')!==null){
+                    iframe.contentWindow.document.head.querySelector('script[src="main.js"]').remove();
+                }
+                if(iframe.contentWindow.document.head.querySelector('script[src="example.js"]')!==null){
+                    iframe.contentWindow.document.head.querySelector('script[src="example.js"]').remove();
+                }
+
+                const script = document.createElement('script');
+                script.setAttribute('src', 'example.js');
+
+
+                iframe.contentWindow.document.body.append(script);
+            })
+            //.then(() => iframe.contentWindow.location.reload(true))
+            //.then(() => this.props.saveSiteChange())
+            //.then(() => this.props.isChangePanelShow())
+            //.then(() => iframe.load("../userDir/empty.html"))
+            //.then(() => iframe.load("../userDir/index.html"))
+             .then(() => {
+                 const iframe = document.querySelector('iframe');
+                 //console.log(iframe);
+
+                 this.props.enableDeleteSectionButton(iframe)
+             });
 
 
     }
@@ -343,12 +474,14 @@ const mapStateToProps = (state) => {
         currentSiteStyle: state.currentSiteStyle,
         currentTheme: state.currentTheme,
         currentRubric: state.currentRubric,
+        //libs: state.libs
     }
 };
 const mapDispatchToProps = {
     virtualDomLoaded,
     virtualDomChanged,
-    isChangePanelShow
+    isChangePanelShow,
+    //slibsSet
 };
 
 export default WithCreateService()(connect(mapStateToProps, mapDispatchToProps)(AddElementModal));

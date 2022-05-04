@@ -1,9 +1,10 @@
 import React from 'react';
 import Header from "../header";
 import RubricList from "../rubric-list/rubric-list";
+import SubRubricList from "../subrubric-list/subrubric-list";
 import {FormattedMessage} from "react-intl";
 
-const RubricsPage = () => {
+const ChooseSubrubricPage = (props) => {
     const menu = {
         aLink: [
 
@@ -19,12 +20,15 @@ const RubricsPage = () => {
             {title: <FormattedMessage id='sign_out'/>, link: "/"}
         ]
     ;
+
+
     return (
+
         <>
             <Header menu={menu} user={user}/>
-            <RubricList/>
+            <SubRubricList idRubric={+props.match.params.id}/>
         </>
     )
 
 };
-export default RubricsPage;
+export default ChooseSubrubricPage;

@@ -1,9 +1,28 @@
 export default class CreatorService{
+
+
     _apiBase = `http://back-creator:1252/`;
+
+
 
     async getResource(url){
 
-        const res = await fetch(`${this._apiBase}${url}`, {credentials: 'include'});
+        // function getCookie(name) {
+        //     let matches = document.cookie.match(new RegExp(
+        //         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        //     ));
+        //     return matches ? decodeURIComponent(matches[1]) : undefined;
+        // }
+        // //document.cookie = 'SameSite=None; Secure';
+        // console.log(document.cookie);
+        // // let session = getCookie('PHPSESSID');
+        // // console.log(session);
+        // const headers = new Headers({
+        //      'Content-Type': 'application/json',
+        //         'Access-Control-Allow-Origin': 'http://back-creator:1252/'
+        // });{credentials: 'include'}
+
+        const res = await fetch(`${this._apiBase}${url}` );
 
         if(!res.ok){
             throw  new Error(`Could not fetch ${this._apiBase}${url},
@@ -15,26 +34,26 @@ export default class CreatorService{
         return await res.json();
     }
 
-    async getRubrics(){
-        return await this.getResource('rubrics');
+    async getRubrics(currentLang){
+        return await this.getResource(`rubrics/${currentLang}`);
     }
 
     async getAllFonts(){
         return await this.getResource('fonts');
     }
 
-    async getIframeByRubricId(idRubrics, siteType, siteStyle, siteTheme){
+    async getIframeByRubricId(idRubrics, siteType, siteStyle, siteTheme, lang){
 
         if(siteType === 'landing'){
-            return await this.getResource(`landing/${idRubrics}/${siteStyle}/${siteTheme}`);
+            return await this.getResource(`landing/${idRubrics}/${siteStyle}/${siteTheme}/${lang}`);
         }
         else{
-            return await this.getResource(`manyPage/${idRubrics}/${siteStyle}/${siteTheme}`);
+            return await this.getResource(`manyPage/${idRubrics}/${siteStyle}/${siteTheme}/${lang}`);
         }
 
-
-
-
+    }
+    async getSubRubrics(idRubric, lang){
+        return await this.getResource(`subrubrics/${idRubric}/${lang}`);
     }
 
     async getSectionsByName(currentRubric, section, currentSiteStyle){

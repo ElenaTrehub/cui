@@ -12,14 +12,15 @@ $_POST = json_decode(file_get_contents("php://input"), true);
 if (!is_dir('../userDir')) {
     mkdir('../userDir');
 }
-$file = "../userDir/style.css";
+
+$file = "../userDir/example.css";
 
 
 if ($_POST['css']) {
 
     $sectionCss = $_POST['css'];
 
-    $newCss = file_get_contents($file).$sectionCss;
+    $newCss = file_get_contents($file).'/*'.$_POST['section'].'-start*/'.$sectionCss.'/*'.$_POST['section'].'-end*/';
 
 
     if (file_get_contents($file)) {

@@ -1,5 +1,6 @@
+
+
 const inintialState = {
-    rubrics: [],
     auth: false,
     loading: true,
     error: false,
@@ -25,38 +26,27 @@ const inintialState = {
     ],
     currentSiteStyle: {name: 'classic', ru: 'классический', en: 'classic'},
     currentRubric: -1,
-    currentSiteType: ''
+    currentSiteType: '',
+    defaultLang: 'ENGLISH',
+    currentLang: 'ENGLISH',
+    languages: [
+        {name: 'en', code: 'ENGLISH'},
+        {name: 'ru', code: 'RUSSIAN'},
+    ],
+    //libs: []
 
 };
 
 const reducer = (state = inintialState, action) => {
     switch (action.type) {
-        case 'RUBRICS_LOADED':
-            return {
-                ...state,
-                rubrics: action.payload,
-                loading: false,
-                error: false
-            };
+
         case 'IS_CHANGE_PANEL_SHOW':
             return{
                 ...state,
                 changePanelShow: !state.changePanelShow
             }
-        case 'RUBRICS_REQUESTED':
-            return {
-                ...state,
-                rubrics: state.rubrics,
-                loading: true,
-                error: false
-            };
-        case 'RUBRICS_ERROR':
-            return {
-                ...state,
-                rubrics: state.rubrics,
-                loading: false,
-                error: true
-            };
+
+
         case 'IFRAME_LOADED':
 
             return {
@@ -166,6 +156,18 @@ const reducer = (state = inintialState, action) => {
                 ...state,
                 changeSectionName: action.payload
             };
+        case 'IS_CHANGE_CURRENT_LANG':
+
+            return {
+                ...state,
+                currentLang: action.payload
+            };
+        // case 'LIBS_SET':
+        //     let newLibs = [...state.libs, ...action.payload];
+        //     return {
+        //         ...state,
+        //         libs: newLibs
+        //     };
         default:
             return state;
 

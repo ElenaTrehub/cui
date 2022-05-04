@@ -12,7 +12,7 @@ $_POST = json_decode(file_get_contents("php://input"), true);
 if (!is_dir('../userDir')) {
     mkdir('../userDir');
 }
-$file = "../userDir/main.js";
+$file = "../userDir/example.js";
 
 
 if ($_POST['section'] && $_POST['js']) {
@@ -26,7 +26,7 @@ if ($_POST['section'] && $_POST['js']) {
 
     $length = $endIndex - $startIndex;
 
-    $newJs = substr(file_get_contents($file), 0, $startIndex). $sectionJs. substr(file_get_contents($file), $endIndex);
+    $newJs = substr(file_get_contents($file), 0, $startIndex). '/*'.$_POST['section'].'-start*/'. $sectionJs. '/*'.$_POST['section'].'-end*/'. substr(file_get_contents($file), $endIndex);
 
 
     if (file_get_contents($file)) {

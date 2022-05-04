@@ -1,23 +1,3 @@
-const rubricsLoaded = (newRubrics) => {
-
-    return {
-        type: 'RUBRICS_LOADED',
-        payload: newRubrics
-    }
-};
-
-const rubricsRequested = () => {
-    return {
-        type: 'RUBRICS_REQUESTED'
-    }
-};
-
-const rubricsError = () => {
-    return {
-        type: 'RUBRICS_ERROR'
-    }
-};
-
 const iframeLoaded = (newIframe) => {
     return {
         type: 'IFRAME_LOADED',
@@ -116,10 +96,13 @@ const chooseChangeSectionName = (newSectionName) => {
         payload: newSectionName
     }
 };
+const changeCurrentLang = (newLang) => {
+    return {
+        type: 'IS_CHANGE_CURRENT_LANG',
+        payload: newLang
+    }
+};
 export {
-    rubricsLoaded,
-    rubricsRequested,
-    rubricsError,
     iframeLoaded,
     iframeRequested,
     iframeError,
@@ -136,6 +119,7 @@ export {
     chooseCurrentSiteType,
     chooseCurrentSiteStyle,
     virtualDomChanged,
-    chooseChangeSectionName
+    chooseChangeSectionName,
+    changeCurrentLang
 
 };

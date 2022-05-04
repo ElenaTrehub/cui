@@ -1,0 +1,44 @@
+.subrubric-list{
+  padding: 3% 0;
+  h1{
+    text-align: center;
+    color: $menu-color;
+    margin-bottom: 50px;
+    font-size: 32px;
+  }
+
+}
+.subrubric{
+  width: 100%;
+  height: 220px;
+  position: relative;
+  margin-bottom: 30px;
+  overflow: hidden;
+  padding: 15px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  transition: box-shadow 0.3s ease-in-out;
+  &:hover,
+  &:focus{
+    box-shadow: rgba(100, 100, 111, 0.4) 0px 4px 12px;
+  }
+}
+
+.sub-title{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+
+  p{
+    color: $menu-color;
+    text-transform: uppercase;
+    font-size: 20px;
+    text-align: center;
+  }
+}

@@ -23,14 +23,23 @@ class SectionChangeModal extends Component{
 
     chooseSection = (e, id, name) => {
 
-        const {CreatorService, section, currentSiteStyle, currentRubric, currentSiteType} = this.props;
+        const {CreatorService, section, currentSiteStyle, currentRubric, currentSiteType, libs} = this.props;
         const {color} = this.state;
         const iframe = document.querySelector('iframe');
+        const page = iframe.contentDocument.body.getAttribute('data-page');
+
         CreatorService.getChooseSection(currentRubric, section, currentSiteStyle.name, color, id, currentSiteType)
             .then((res) => {
+                let sectionNmae = '';
+                if(section !== 'header' && section !== 'footer'){
+                    sectionNmae = page + '-' + section;
+                }
+                else{
+                    sectionNmae = section;
+                }
                 fetch("../../api/saveSectionStyleChange.php", {
                     method: 'POST',
-                    body: JSON.stringify({section: section, css: res.css})
+                    body: JSON.stringify({section: sectionNmae, css: res.css})
                 })
                     .then((result) => {
                         if(!result.ok){
@@ -47,7 +56,7 @@ class SectionChangeModal extends Component{
 
                 if(section === 'header' || section === 'footer'){
                     let newVirtualDom = [];
-                    const page = iframe.contentDocument.body.getAttribute('data-page');
+
 
                     let newDom = '';
                     let names = [];
@@ -68,16 +77,24 @@ class SectionChangeModal extends Component{
                         const newSection = document.createElement('section');
                         newSection.innerHTML = res.html;
 
+
+
                         const deletePanel = currentDomSection.querySelector('delete-section').cloneNode(true);
+
 
                         while(currentDomSection.firstChild){
                             currentDomSection.firstChild.remove();
                         }
+
+
+
                         const divs = newSection.querySelectorAll('section > div');
                         divs.forEach((item) => {
                             currentDomSection.appendChild(item);
                         })
                         currentDomSection.appendChild(deletePanel);
+
+
 
                         const virtualDomObj = {
                             name: name,
@@ -85,13 +102,25 @@ class SectionChangeModal extends Component{
                         }
                         changedVirtualDom.push(virtualDomObj);
                     })
+                    const currentIframeSection = iframe.contentDocument.querySelector('.'+section);
+
+                    const newSectionIframeWrapper = document.createElement('section');
+                    newSectionIframeWrapper.innerHTML = res.html;
+                    const deleteIframePanel = iframe.contentDocument.querySelector('delete-section').cloneNode(true);
+                    while(currentIframeSection.firstChild){
+                        currentIframeSection.firstChild.remove();
+                    }
+                    const divsIframe = newSectionIframeWrapper.querySelectorAll('section > div');
+                    divsIframe.forEach((item) => {
+                        currentIframeSection.appendChild(item);
+                    })
+                    currentIframeSection.appendChild(deleteIframePanel);
 
 
                     this.props.virtualDomChanged(changedVirtualDom);
                 }
                 else{
                     let newVirtualDom = [];
-                    const page = iframe.contentDocument.body.getAttribute('data-page');
 
                     let newDom = '';
                     let name = '';
@@ -104,20 +133,35 @@ class SectionChangeModal extends Component{
                     });
 
                     const currentDomSection = newDom.querySelector('.'+section);
+                    const currentIframeSection = iframe.contentDocument.querySelector('.'+section);
 
                     const newSection = document.createElement('section');
                     newSection.innerHTML = res.html;
 
+                    const newSectionIframeWrapper = document.createElement('section');
+                    newSectionIframeWrapper.innerHTML = res.html;
+
                     const deletePanel = currentDomSection.querySelector('delete-section').cloneNode(true);
+                    const deleteIframePanel = iframe.contentDocument.querySelector('delete-section').cloneNode(true);
 
                     while(currentDomSection.firstChild){
                         currentDomSection.firstChild.remove();
                     }
+                    while(currentIframeSection.firstChild){
+                        currentIframeSection.firstChild.remove();
+                    }
+
                     const divs = newSection.querySelectorAll('section > div');
                     divs.forEach((item) => {
                         currentDomSection.appendChild(item);
                     })
                     currentDomSection.appendChild(deletePanel);
+
+                    const divsIframe = newSectionIframeWrapper.querySelectorAll('section > div');
+                    divsIframe.forEach((item) => {
+                        currentIframeSection.appendChild(item);
+                    })
+                    currentIframeSection.appendChild(deleteIframePanel);
 
                     const virtualDomObj = {
                         name: name,
@@ -144,15 +188,39 @@ class SectionChangeModal extends Component{
                  return res;
             })
             .then((res) => {
+                // let needLibs = [];
+                // console.log(libs);
+                // res.set.libs.forEach((item) => {
+                //     if(libs.indexOf(item) === -1){
+                //         needLibs.push(item);
+                //     }
+                // });
+                // let jsStr = '';
+                // if(needLibs.length > 0){
+                //     jsStr = res.libs + ' ' + res.js;
+                // }
+                // else{
+                //     jsStr = res.js;
+                // }
+                let sectionName = '';
+                if(section !== 'header' && section !== 'footer'){
+                    sectionName = page + '-' + section;
+                }
+                else{
+                    sectionName = section;
+                }
+
                 if(res.js){
+
                     fetch("../../api/saveSectionJsChange.php", {
                         method: 'POST',
-                        body: JSON.stringify({section: section, js: res.js})
+                        body: JSON.stringify({section: sectionName, js: '{/*libs-start*/'+res.libs+'/*libs-end*/'+res.js+'}'})
                     })
                         .then((result) => {
                             if(!result.ok){
                                 throw Error(res.statusText)
                             }
+
 
                         })
                 }
@@ -167,11 +235,48 @@ class SectionChangeModal extends Component{
                     }
                 })
             })
-            .then(() => this.props.saveSiteChange(e))
-            .then(() => this.props.isChangePanelShow())
-            .then(() => iframe.load("../userDir/empty.html"))
-            .then(() => iframe.load("../userDir/index.html"))
-            .then(() => this.props.enableEditing(iframe))
+            .then(() => {
+                if(iframe.contentWindow.document.head.querySelector('link[href="style.css"]')){
+                    iframe.contentWindow.document.head.querySelector('link[href="style.css"]').remove();
+                }
+                if(iframe.contentWindow.document.head.querySelector('link[href="example.css"]')){
+                    iframe.contentWindow.document.head.querySelector('link[href="example.css"]').remove();
+                }
+
+
+                const link = document.createElement('link');
+                link.setAttribute('rel', 'stylesheet');
+                link.setAttribute('href', 'example.css');
+
+                iframe.contentWindow.document.head.append(link);
+
+
+                if(iframe.contentWindow.document.head.querySelector('script[src="main.js"]')!==null){
+                    iframe.contentWindow.document.head.querySelector('script[src="main.js"]').remove();
+                }
+                if(iframe.contentWindow.document.head.querySelector('script[src="example.js"]')!==null){
+                    iframe.contentWindow.document.head.querySelector('script[src="example.js"]').remove();
+                }
+
+
+                const script = document.createElement('script');
+                script.setAttribute('src', 'example.js');
+
+
+                iframe.contentWindow.document.body.append(script);
+            })
+
+            .then(() => {
+                const iframe = document.querySelector('iframe');
+                //console.log(iframe);
+
+                this.props.enableDeleteSectionButton(iframe);
+            });
+            //.then(() => this.props.saveSiteChange(e))
+            //.then(() => this.props.isChangePanelShow())
+            //.then(() => iframe.load("../userDir/empty.html"))
+            //.then(() => iframe.load("../userDir/index.html"))
+            //.then(() => this.props.enableEditing(iframe))
 
 
 
@@ -334,11 +439,13 @@ const mapStateToProps = (state) => {
         currentTheme: state.currentTheme,
         currentRubric: state.currentRubric,
         changePanelShow: state.changePanelShow,
+        //libs: state.libs
     }
 };
 const mapDispatchToProps = {
     isChangePanelShow,
     virtualDomChanged,
+    //libsSet
 };
 
 export default WithCreateService()(connect(mapStateToProps, mapDispatchToProps)(SectionChangeModal));

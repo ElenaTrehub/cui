@@ -11,7 +11,7 @@ const gulp = require('gulp'),
 
 
 //const dist = 'C:/OpenServer/OSPanel/domains/cui-admin';
-const dist = 'C:/OpenServer/domains/cui-admin';
+const dist = 'C:/OpenServer/domains/cui-prog';
 const prod = './build';
 gulp.task('copy-html', () => {
     return gulp.src('./app/src/index.html')

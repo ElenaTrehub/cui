@@ -46,6 +46,7 @@ export default class HtmlObjectTransform{
         if(obj.id){
             block.setAttribute('id', obj.id);
         }
+
         if(obj.width){
             block.setAttribute('width', obj.width);
         }
@@ -63,6 +64,9 @@ export default class HtmlObjectTransform{
         }
         if(obj["data-page"]){
             block.setAttribute('data-page', obj["data-page"]);
+        }
+        if(obj["deletesectionid"]){
+            block.setAttribute('deletesectionid', obj["deletesectionid"]);
         }
         if(obj.tabindex){
             block.setAttribute('tabindex', obj.tabindex);
@@ -247,6 +251,9 @@ export default class HtmlObjectTransform{
             }
             if(elem.nodeType == 1 && elem.hasAttribute('data-page')){
                 objElem['data-page'] = elem.getAttribute('data-page');
+            }
+            if(elem.nodeType == 1 && elem.hasAttribute('deletesectionid')){
+                objElem['deletesectionid'] = elem.getAttribute('deletesectionid');
             }
 
             return objElem;

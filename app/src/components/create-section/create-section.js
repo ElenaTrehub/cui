@@ -10,7 +10,7 @@ import {
     iframeIsChange,
     deleteFavoriteIframe,
     chooseCurrentTheme,
-    chooseCurrentFontStyle, chooseCurrentRubric, chooseCurrentSiteType, chooseChangeSectionName
+    chooseCurrentFontStyle, chooseCurrentRubric, chooseCurrentSiteType, chooseChangeSectionName, virtualDomChanged
 } from '../../actions';
 import Spinner from "../spinner";
 import {connect} from "react-redux";
@@ -53,6 +53,7 @@ class CreateSection extends Component{
 
         const idRubrics = +this.props.match.params.id;
         const siteType = this.props.match.params.site;
+        const lang = this.props.currentLang;
 
         this.props.chooseCurrentRubric(idRubrics);
         this.props.chooseCurrentSiteType(siteType);
@@ -60,19 +61,21 @@ class CreateSection extends Component{
         const siteStyle = this.props.currentSiteStyle;
         const siteTheme = this.props.currentTheme;
 
-        this.createNewIframe(idRubrics, siteType, siteStyle.name, siteTheme.name);
+        this.createNewIframe(idRubrics, siteType, siteStyle.name, siteTheme.name, lang);
 
 
 
     }
 
-    createNewIframe(idRubrics, siteType, siteStyle, siteTheme){
+    createNewIframe(idRubrics, siteType, siteStyle, siteTheme, lang){
         const {CreatorService} = this.props;
 
         const iframe = document.querySelector('iframe');
 
-        CreatorService.getIframeByRubricId(idRubrics, siteType, siteStyle, siteTheme)
+        CreatorService.getIframeByRubricId(idRubrics, siteType, siteStyle, siteTheme, lang)
             .then(res => {
+                //console.log(res);
+                //this.props.libsSet(res.set.libs);
 
                 return res;
             })
@@ -210,7 +213,9 @@ class CreateSection extends Component{
                         `</head>`;
                     const js = `
                     <script src="../assets/wow.js"></script>
+<!--                    <script src="../assets/iframe.js"></script>-->
                     <script src="main.js"></script>
+                    
                     
                     </html>
                 `;
@@ -245,8 +250,43 @@ class CreateSection extends Component{
             .then(() => iframe.load("../userDir/empty.html"))
             .then(() => iframe.load("../userDir/index.html"))
             //.then(() => this.enableEditing(iframe))
-            .then(() => this.enableDeleteSectionButton(iframe))
-            //.then(() => this.injectStyles(iframe))
+            //.then(() => this.enableDeleteSectionButton(iframe))
+//             .then(() => {
+//                 if(this.props.currentSiteType === 'manyPage'){
+//                     const linksHeader = iframe.contentDocument.querySelectorAll('.menu_main > ul > li a');
+//                     const footerLinks = iframe.contentDocument.querySelectorAll('.menu-sitemap > li a');
+//
+//                     let links = [];
+//                     if(footerLinks){
+//                         links = [...linksHeader, ...footerLinks];
+//                     }
+//                     else{
+//                         links = [...linksHeader];
+//                     }
+//
+//
+//                     const message = 'При переходе по ссылке все изменения на странице пропадут. Сохранить данные изменения? ';
+//
+//                     links.forEach((item) => {
+//                         item.addEventListener('click', (e) => {
+//                             e.preventDefault();
+//                             if(confirm(message)){
+//                                 this.saveCurrentChangeInPage();
+//                             }
+// console.log(window.frames[0].location.href);
+//                             console.log(e.target.getAttribute('href'));
+//                             window.frames[0].location.href = 'http://cui-prog:1252/userDir/about.html';
+//
+//                             //confirm(message);
+//                             //console.log(e.target.getAttribute('href'));
+//                         })
+//                     })
+//
+//
+//
+//                 }
+//             })
+            .then(() => this.injectStyles(iframe))
 
         iframe.onload = () => {
             this.enableDeleteSectionButton(iframe);
@@ -269,18 +309,11 @@ class CreateSection extends Component{
         });
     }
 
-    enableDeleteSectionButton(iframe) {
+    enableDeleteSectionButton = (iframe)=> {
 
             iframe.contentDocument.querySelectorAll("delete-section").forEach(element => {
-                 const id = element.getAttribute("deleteSectionId");
-                 let virtualElement = '';
- //console.log(this.props.virtualDom);
-                this.props.virtualDom.forEach((item) => {
-                    if(item.html.querySelector(`[deleteSectionId="${id}"]`)){
-                         virtualElement = item.html.querySelector(`[deleteSectionId="${id}"]`);
-                     }
+                 const idNumber = element.getAttribute("deleteSectionId");
 
-                 });
 
 
                 const delButton = element.querySelector(".delete-button");
@@ -359,8 +392,83 @@ class CreateSection extends Component{
                     UIkit.modal.confirm("Вы действительно хотите далить блок из структуры сайта? " +
                         "Все несохраненные данные будут потеряны!", {labels: {ok: "Удалить", cancel: 'Отмена'}})
                         .then(() => {
-                            element.parentNode.remove();
-                            virtualElement.parentNode.remove();
+
+                            if(this.props.currentSiteType === 'manyPage' && (element.parentNode.getAttributeNode('id').value === 'header'
+                            || element.parentNode.getAttributeNode('id').value === 'footer')){
+
+                                //let id = element.parentNode.getAttributeNode('id').value;
+
+                                //if(id === 'header' || id === 'footer'){
+                                    let newVirtualDom = [];
+                                    let newDom = '';
+                                    let names = [];
+                                    this.props.virtualDom.forEach(item => {
+
+                                        newDom = item.html.cloneNode(true);
+                                        names.push(item.name);
+                                        newVirtualDom.push(newDom);
+                                    });
+                                    let changedVirtualDom = [];
+                                    newVirtualDom.forEach((newDom, index) => {
+                                        const name  = names[index];
+                                        let section = newDom.querySelector('#'+id);
+                                        if(section){
+                                            section.remove();
+                                        }
+
+                                        const virtualDomObj = {
+                                            name: name,
+                                            html: newDom
+                                        }
+                                        changedVirtualDom.push(virtualDomObj);
+                                    })
+                                    element.parentNode.remove();
+                                    this.props.virtualDomChanged(changedVirtualDom);
+
+
+                                //}
+
+                            }
+                            else{
+                                element.parentNode.remove();
+                                const page = iframe.contentDocument.body.getAttribute('data-page');
+                                //let newDom = '';
+
+                                let newVirtualDom = [];
+                                let names = [];
+                                this.props.virtualDom.forEach(item => {
+
+                                    let newDom = item.html.cloneNode(true);
+                                    names.push(item.name);
+                                    newVirtualDom.push(newDom);
+                                });
+
+                                let changedVirtualDom = [];
+                                newVirtualDom.forEach((newDom, index) => {
+                                    const name  = names[index];
+
+
+                                    if(name === page){
+                                        console.log(name);
+                                        console.log(page);
+                                        console.log(idNumber);
+                                        if(newDom.querySelector(`[deleteSectionId="${idNumber}"]`)){
+                                            newDom.querySelector(`[deleteSectionId="${idNumber}"]`).parentNode.remove();
+                                        }
+                                    }
+
+                                    const virtualDomObj = {
+                                        name: name,
+                                        html: newDom
+                                    }
+                                    changedVirtualDom.push(virtualDomObj);
+                                })
+
+                                this.props.virtualDomChanged(changedVirtualDom);
+                            }
+
+
+
 
                         })
 
@@ -571,6 +679,7 @@ class CreateSection extends Component{
                         const objIframe = {};
                         objIframe.name = item.name;
                         const newDom = item.html.cloneNode(true);
+
                         //DOMHelper.unwrapTextNodes(newDom);
                         //DOMHelper.unwrapImages(newDom);
 
@@ -643,9 +752,34 @@ class CreateSection extends Component{
                     })
                     return pageArray;
                 })
+                .then((pageArray) => {
+                    fetch("../../api/saveTempStyle.php", {
+                        method: 'POST'
+                    })
+                        .then((res) => {
+                            if(!res.ok){
+                                throw Error(res.statusText)
+                            }
+
+                        })
+                    return pageArray;
+                })
+                .then((pageArray) => {
+                    fetch("../../api/saveTempJs.php", {
+                        method: 'POST'
+                    })
+                        .then((res) => {
+                            if(!res.ok){
+                                throw Error(res.statusText)
+                            }
+
+                          })
+                    return pageArray;
+                })
                 .then(pageArray =>{
 
                     pageArray.forEach((item) => {
+
                         fetch("../../api/saveTempPage.php", {
                             method: 'POST',
                             body: JSON.stringify({html: item.html, name: item.name})
@@ -664,6 +798,7 @@ class CreateSection extends Component{
                     })
 
                 })
+
         }
 
         let newDom = this.props.virtualDom[0].html.cloneNode(this.props.virtualDom[0].html);
@@ -1046,7 +1181,8 @@ const mapStateToProps = (state) => {
         currentRubric: state.currentRubric,
         currentSiteType: state.currentSiteType,
         currentSiteStyle: state.currentSiteStyle,
-        changeSectionName: state.changeSectionName
+        changeSectionName: state.changeSectionName,
+        currentLang: state.currentLang
     }
 };
 const mapDispatchToProps = {
@@ -1062,6 +1198,8 @@ const mapDispatchToProps = {
     chooseCurrentFontStyle,
     chooseCurrentRubric,
     chooseCurrentSiteType,
-    chooseChangeSectionName
+    chooseChangeSectionName,
+    virtualDomChanged
+
 };
 export default WithCreateService()(connect(mapStateToProps, mapDispatchToProps)(CreateSection));

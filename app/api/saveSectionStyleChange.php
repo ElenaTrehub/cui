@@ -12,7 +12,7 @@ $_POST = json_decode(file_get_contents("php://input"), true);
 if (!is_dir('../userDir')) {
     mkdir('../userDir');
 }
-$file = "../userDir/style.css";
+$file = "../userDir/example.css";
 
 
 if ($_POST['section'] && $_POST['css']) {

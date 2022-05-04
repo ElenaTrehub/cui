@@ -1,22 +1,24 @@
 import React from 'react';
 import Header from "../header";
 import MainSection from "../main-section";
+import {FormattedMessage} from "react-intl";
+
 
 const MainPage = () => {
     const menu = {
         aLink: [
-            {title: "Как создать сайт", id: "#howcreate"},
-            {title: "Почему мы", id: "#why"}
+            {title: <FormattedMessage id='link_how_create_site'/>, id: "#howcreate"},
+            {title: <FormattedMessage id='link_why_us'/>, id: "#why"}
         ],
         rLink: [
-            {title: "Техподдержка", link: "/support"}
+            {title: <FormattedMessage id='link_support'/>, link: "/support"}
 
         ]
     };
     const user =
         [
-            {title: "Войти", link: "/auth"},
-            {title: "Регистрация", link: "/register"}
+            {title: <FormattedMessage id='link_logIn'/>, link: "/auth"},
+            {title: <FormattedMessage id='link_registration'/>, link: "/register"}
         ]
     ;
     return (
